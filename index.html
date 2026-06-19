@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic Du lịch Nha Trang - Vinpearl 2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f7ff; 
+        }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #cbd5e1;
+        }
+        @media (min-width: 768px) {
+            .timeline-line::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+        .tab-active {
+            background-color: #1e40af;
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <header class="text-center mb-10 bg-white rounded-2xl p-6 md:p-10 shadow-xl border-b-8 border-blue-600">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-blue-900 tracking-tight mb-3">HÀNH TRÌNH NHA TRANG - VINPEARL</h1>
+        <p class="text-lg md:text-2xl text-blue-600 font-semibold mb-2">🌴 ĐẠI GIA ĐÌNH HỘI QUÂN 🌴</p>
+        <p class="text-sm md:text-md text-slate-500 font-medium">Thời gian: 19/06/2024 - 23/06/2024</p>
+        <div class="flex flex-wrap justify-center gap-3 mt-6">
+            <span class="bg-blue-100 text-blue-800 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">📍 Điểm đi: Pleiku, Đắk Lắk & TP. HCM</span>
+            <span class="bg-indigo-100 text-indigo-800 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">🏖️ Điểm đến: Nha Trang & Đảo Hòn Tre</span>
+        </div>
+    </header>
+
+    <section class="mb-12">
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
+                📊 Tổng Quan Đoàn & Bố Trí Hậu Cần
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <p class="text-slate-600 mb-4 leading-relaxed text-sm md:text-base">
+                        Chuyến đi quy tụ đông đảo các thế hệ gia đình thân yêu từ Pleiku, Đắk Lắk, TP. Hồ Chí Minh và gia đình Cô 7 về từ Mỹ. Sơ đồ cơ cấu thành viên và cách bố trí các phòng ngủ biệt lập giúp toàn đoàn có không gian kết nối ấm cúng nhưng vẫn giữ được sự riêng tư thư thái nhất.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                        <div class="p-4 bg-blue-50 border-l-4 border-blue-600 rounded-r-lg">
+                            <span class="block text-xs font-bold text-blue-800 uppercase tracking-wider">Khởi hành Pleiku</span>
+                            <span class="text-md font-extrabold text-slate-800">Anh Chị 2</span>
+                        </div>
+                        <div class="p-4 bg-amber-50 border-l-4 border-amber-600 rounded-r-lg">
+                            <span class="block text-xs font-bold text-amber-800 uppercase tracking-wider">Khởi hành Đắk Lắk</span>
+                            <span class="text-md font-extrabold text-slate-800">Chú 9 & Cô Hằng</span>
+                        </div>
+                        <div class="p-4 bg-indigo-50 border-l-4 border-indigo-600 rounded-r-lg">
+                            <span class="block text-xs font-bold text-indigo-800 uppercase tracking-wider">Khởi hành TP. HCM</span>
+                            <span class="text-md font-extrabold text-slate-800">Gia đình A3, Chú 5, Cô 6, Cô 7, Chú 8, Bi, Nhi...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container flex items-center justify-center">
+                    <canvas id="memberChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="text-2xl md:text-3xl font-extrabold text-center text-blue-950 mb-6">📍 Lộ Trình Di Chuyển Chi Tiết Theo Ngày</h2>
+        <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto text-sm md:text-base">
+            Nhấp chọn từng ngày bên dưới để xem chi tiết thời gian, điểm đón, ăn uống, phương tiện di chuyển và hình ảnh thực tế của điểm đến.
+        </p>
+        
+        <!-- Tab Buttons -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-10">
+            <button onclick="switchTab('day1')" id="btn-day1" class="tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 bg-white text-slate-700 shadow border border-slate-200 hover:bg-slate-50">
+                📅 NGÀY 1 (19/06)<br><span class="text-xs font-normal">Xuất phát Pleiku</span>
+            </button>
+            <button onclick="switchTab('day2')" id="btn-day2" class="tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 tab-active">
+                📅 NGÀY 2 (20/06)<br><span class="text-xs font-normal">Hội quân Nha Trang</span>
+            </button>
+            <button onclick="switchTab('day3')" id="btn-day3" class="tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 bg-white text-slate-700 shadow border border-slate-200 hover:bg-slate-50">
+                📅 NGÀY 3 (21/06)<br><span class="text-xs font-normal">Đảo Ngọc Vinpearl</span>
+            </button>
+            <button onclick="switchTab('day4')" id="btn-day4" class="tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 bg-white text-slate-700 shadow border border-slate-200 hover:bg-slate-50">
+                📅 NGÀY 4 (22/06)<br><span class="text-xs font-normal">Chinh phục kỷ lục</span>
+            </button>
+            <button onclick="switchTab('day5')" id="btn-day5" class="tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 bg-white text-slate-700 shadow border border-slate-200 hover:bg-slate-50">
+                📅 NGÀY 5 (23/06)<br><span class="text-xs font-normal">Chào tạm biệt</span>
+            </button>
+        </div>
+
+        <!-- Tab Content Areas -->
+        <div class="relative min-h-[500px]">
+
+            <!-- ================= DAY 1 CONTENT ================= -->
+            <div id="day1" class="tab-content hidden space-y-8">
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-lg mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">🚗 NGÀY 19/06: Khởi Hành Từ Pleiku</h3>
+                    <p class="text-blue-100 text-sm md:text-base">Mở màn hành trình, Anh Chị 2 xuất phát trước từ Gia Lai để đón đoàn.</p>
+                </div>
+
+                <div class="relative timeline-line space-y-12">
+                    <!-- Day 1 - Item 1 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-blue-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">🚍 Di chuyển</span>
+                                <span class="text-slate-500 text-xs font-bold">Cả ngày</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Pleiku ➡️ Nha Trang</h4>
+                            <p class="text-slate-600 text-sm">Anh Chị 2 chủ động di chuyển bằng xe khách giường nằm chất lượng cao từ Gia Lai đến thành phố Nha Trang.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 1 - Item 2 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-teal-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold">🏨 Lưu trú</span>
+                                <span class="text-slate-500 text-xs font-bold">Chiều tối</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Check-in Khách Sạn Santa Nha Trang</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Địa chỉ: 24E Nguyễn Thiện Thuật, Phường Tân Lập, Nha Trang</p>
+                            <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/0f172a/ffffff?text=Santa+Hotel+Nha+Trang'" alt="Santa Hotel Nha Trang" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            <div class="bg-teal-50 p-3 rounded-lg text-xs space-y-1 text-teal-950">
+                                <p>🔑 <strong>Mã đặt phòng:</strong> 1732787625</p>
+                                <p>📞 <strong>SĐT Khách sạn:</strong> 025.83.544.666</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= DAY 2 CONTENT ================= -->
+            <div id="day2" class="tab-content space-y-8">
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-lg mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">🚌 NGÀY 20/06: Đón Đoàn TP. HCM & Hội Quân Toàn Đại Gia Đình</h3>
+                    <p class="text-blue-100 text-sm md:text-base">Ngày hành trình then chốt hội tụ các thành viên từ hai miền Nam - Trung bộ.</p>
+                </div>
+
+                <div class="relative timeline-line space-y-12">
+                    <!-- Day 2 - Item 1 (Pickups) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-blue-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">🚌 Xe Thuê</span>
+                                <span class="text-blue-600 font-extrabold text-xs">05:00 - 05:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Đón Đoàn Gia Đình tại TP. HCM</h4>
+                            <div class="space-y-2 text-xs text-slate-600">
+                                <p class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> <strong>05:00:</strong> Đón tại 105/6 Hoàng Hoa Thám</p>
+                                <p class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> <strong>05:10:</strong> Đón tại c/c 234 Phan Văn Trị</p>
+                                <p class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> <strong>05:30:</strong> Đón tại Man Thiện</p>
+                            </div>
+                            <div class="mt-3 p-2.5 bg-yellow-50 border-l-2 border-yellow-500 rounded text-[11px] text-yellow-800 leading-relaxed">
+                                💡 <em>Ghi chú cho BiPM:</em> Tùy chọn địa điểm tối ưu nhất để thuận đường di chuyển hoặc đón bổ sung dọc trục Phạm Văn Đồng.
+                            </div>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 2 - Item 2 (Breakfast) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-orange-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-bold">🍽️ Ăn Sáng</span>
+                                <span class="text-orange-600 font-extrabold text-xs">07:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Nạp Năng Lượng Đầu Hành Trình</h4>
+                            <p class="text-slate-600 text-sm mb-2">Xe thuê dừng chân nghỉ ngơi và dùng bữa sáng tự do tại trạm dừng nghỉ trên tuyến đường cao tốc.</p>
+                            <span class="inline-block bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs">📍 Trạm dừng chân cao tốc</span>
+                        </div>
+                    </div>
+
+                    <!-- Day 2 - Item 3 (Lunch) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-green-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold">🍽️ Ăn Trưa</span>
+                                <span class="text-green-600 font-extrabold text-xs">12:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Ăn Trưa Hội Quân Tại Nhà Hàng Nha Trang Xưa</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 30 Thái Thông, Nha Trang | 📞 ĐT: 0356.003.603</p>
+                            <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/15803d/ffffff?text=Nha+Trang+Xua+Restaurant'" alt="Nha Trang Xưa Restaurant" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            
+                            <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 text-slate-700 mb-3">
+                                <p class="font-bold text-green-800">📋 Thực Đơn Đồng Quê Gợi Ý:</p>
+                                <p>• Bánh xèo tôm mực đất dừa (Giòn rụm)</p>
+                                <p>• Gà đồi Ninh Hòa lên mẹt (Ăn kèm xôi phồng)</p>
+                                <p>• Cá nướng ống tre mộc mạc thơm lừng</p>
+                                <p>• Lẩu chua tôm tươi rau muống thanh nhiệt</p>
+                            </div>
+                            <div class="bg-blue-50 p-2.5 border-l-2 border-blue-500 rounded text-[11px] text-blue-800 leading-relaxed mb-2">
+                                💡 <strong>Đoàn Pleiku:</strong> Anh Chị 2 làm thủ tục checkout tại khách sạn Santa vào buổi trưa và chủ động di chuyển thẳng tới đây để hội ngộ ăn trưa cùng đại gia đình.
+                            </div>
+                            <div class="bg-amber-50 p-2.5 border-l-2 border-amber-500 rounded text-[11px] text-amber-800 leading-relaxed">
+                                💡 <strong>Đoàn Đắk Lắk:</strong> Chú 9 và Cô Hằng chủ động di chuyển từ Đắk Lắk trực tiếp đến nhà hàng Nha Trang Xưa để hội quân ăn trưa cùng đại gia đình vào lúc 12:00.
+                            </div>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 2 - Item 4 (Check-in Panorama) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-indigo-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-indigo-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">🏨 Nhận Phòng</span>
+                                <span class="text-indigo-600 font-extrabold text-xs">14:00 - 16:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Nhận Phòng tại Panorama Nha Trang Star Beach</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 02 Nguyễn Thị Minh Khai, Lộc Thọ, Nha Trang | 📞 ĐT: 0796.779.777</p>
+                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/4338ca/ffffff?text=Panorama+Nha+Trang'" alt="Panorama Nha Trang" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            
+                            <!-- Detailed Room Assignment List -->
+                            <div class="space-y-3">
+                                <div class="bg-sky-50 p-3 rounded-lg text-xs">
+                                    <span class="font-bold text-sky-900 block mb-1">🏢 4 PHÒNG STUDIO OCEAN VIEW (Mã đặt phòng: 1724175072)</span>
+                                    <ul class="space-y-1 list-disc list-inside text-slate-700">
+                                        <li>Phòng 1 & 2: Gia đình Cô 7</li>
+                                        <li>Phòng 3: Anh chị 2 và Nhi</li>
+                                        <li>Phòng 4: Gia đình Chú 9, Anh Bi</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-indigo-50 p-3 rounded-lg text-xs">
+                                    <span class="font-bold text-indigo-950 block mb-1">🛌 4 PHÒNG SUPERIOR KING (Các mã đặt riêng lẻ)</span>
+                                    <ul class="space-y-1 list-disc list-inside text-slate-700">
+                                        <li>Phòng 1 (Mã 1724177674): Gia đình Anh 3</li>
+                                        <li>Phòng 2 (Mã 1724178739): Gia đình Chú 5</li>
+                                        <li>Phòng 3 (Mã 1724179184): Gia đình Chú 8</li>
+                                        <li>Phòng 4 (Mã 1724179726): Cô 6 , Anh Nhân</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 2 - Item 5 (Nhi Arrival) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-sky-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-sky-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-xs font-bold">✈️ Máy Bay</span>
+                                <span class="text-sky-600 font-extrabold text-xs">Bay lúc 14:35</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Chị Nhi Bay Khởi Hành Từ TP. HCM</h4>
+                            <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 text-slate-700 mb-2">
+                                <p>✈️ <strong>Chuyến bay:</strong> VJ600 (Vietjet Air)</p>
+                                <p>🎫 <strong>Mã đặt vé:</strong> 2TXGXS</p>
+                            </div>
+                            <div class="p-2 bg-yellow-50 border-l-2 border-yellow-500 rounded text-[11px] text-yellow-800">
+                                📞 <strong>Hướng dẫn đón:</strong> Sau khi hạ cánh tại Cam Ranh, Nhi liên hệ trực tiếp số điện thoại bác tài xe đón sân bay: <strong>0906.577.011</strong> để về Panorama.
+                            </div>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 2 - Item 6 (Beach Time) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-cyan-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-cyan-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold">🚶‍♂️ Đi bộ</span>
+                                <span class="text-cyan-600 font-extrabold text-xs">16:30 - 17:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Tắm Biển Tự Do Tại Bãi Biển Trần Phú</h4>
+                            <p class="text-slate-600 text-sm">Cả đoàn cùng đi bộ qua đường để hòa mình vào làn nước mát tại bãi biển trung tâm sầm uất ngay trước khách sạn.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 2 - Item 7 (Hygiene) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-slate-400 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-slate-400">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-slate-100 text-slate-800 px-3 py-1 rounded-full text-xs font-bold">🏠 Vệ sinh</span>
+                                <span class="text-slate-500 font-extrabold text-xs">17:30 - 19:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Nghỉ ngơi & Sửa soạn phục trang</h4>
+                            <p class="text-slate-600 text-sm">Cả nhà trở về phòng khách sạn nghỉ ngơi, tắm rửa sạch sẽ và sửa soạn đồ đẹp chuẩn bị đi ăn tối hải sản biển.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 2 - Item 8 (Dinner) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-red-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold">🍽️ Ăn Tối</span>
+                                <span class="text-red-600 font-extrabold text-xs">19:00 - 21:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Thưởng Thức Hải Sản Sát Bờ Biển Tại Làng Tôm</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Đường Nguyễn Cơ Thạch, khu vực Marina, P. Vĩnh Hòa | 📞 ĐT: 0344.95.44.99</p>
+                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/b91c1c/ffffff?text=Lang+Tom+Seafood+Restaurant'" alt="Làng Tôm Seafood" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 text-slate-700">
+                                <p class="font-bold text-red-800">🦀 Món Ngon Đặc Sản Gợi Ý:</p>
+                                <p>• Hàu sữa nướng phô mai béo ngậy</p>
+                                <p>• Tôm hùm Nha Trang đút lò phô mai / hấp dừa</p>
+                                <p>• Cá chim hấp hành cuốn bánh tráng</p>
+                                <p>• Salad rong nho giòn sần sật khai vị</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= DAY 3 CONTENT ================= -->
+            <div id="day3" class="tab-content hidden space-y-8">
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-lg mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">⛴️ NGÀY 21/06: Đảo Ngọc Vinpearl, Vui Chơi Thủy Cung & Tata Show</h3>
+                    <p class="text-blue-100 text-sm md:text-base">Chuyển mình sang đảo Hòn Tre trọn gói nghỉ dưỡng, ngắm thế giới đại dương lung linh.</p>
+                </div>
+
+                <div class="relative timeline-line space-y-12">
+                    <!-- Day 3 - Item 1 (Breakfast) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-orange-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-bold">🍽️ Ăn Sáng</span>
+                                <span class="text-orange-600 font-extrabold text-xs">06:30 - 07:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Điểm Tâm Sáng Tại Panorama</h4>
+                            <p class="text-slate-600 text-sm">Cả nhà dùng điểm tâm buffet ngay tại không gian ẩm thực của khách sạn Panorama để sẵn sàng năng lượng.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 3 - Item 2 (Transfer to Island) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-blue-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">⛴️ Tàu cao tốc</span>
+                                <span class="text-blue-600 font-extrabold text-xs">08:00 - 09:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Check-out & Đi Tàu Sang Đảo Hòn Tre</h4>
+                            <p class="text-slate-600 text-sm">Cả đoàn thu dọn hành lý cá nhân, làm thủ tục check-out Panorama và di chuyển ra bến cảng Vinpearl để lên tàu cao tốc sang đảo.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 3 - Item 3 (VinWonders Morning) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-pink-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-pink-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-xs font-bold">🎡 VinWonders</span>
+                                <span class="text-pink-600 font-extrabold text-xs">09:00 - 12:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Khám phá thế giới đại dương Sea World</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Khu vui chơi VinWonders Nha Trang</p>
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/be185d/ffffff?text=Sea+World+VinWonders'" alt="VinWonders Sea World" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            
+                            <div class="bg-pink-50 p-3 rounded-lg text-xs space-y-2 text-pink-950">
+                                <p class="font-bold">✨ Lịch Trình Các Show Diễn Đặc Sắc:</p>
+                                <p>🧜‍♀️ <strong>09:30 - 09:45:</strong> Biểu diễn Nàng Tiên Cá xinh đẹp (Tại Cung Điện Hải Vương)</p>
+                                <p>🐟 <strong>10:00 - 10:10:</strong> Chương trình Biểu diễn Cho Cá Ăn (Kịch tính tại Sea World)</p>
+                                <p>🦜 <strong>11:00 - 11:20:</strong> Show diễn huấn luyện Chim đặc sắc (Tại King's Garden)</p>
+                            </div>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 3 - Item 4 (Check-in Villa) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-teal-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold">🏨 Biệt thự</span>
+                                <span class="text-teal-600 font-extrabold text-xs">11:30 - 15:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Ăn Trưa & Nhận Biệt Thự Vinpearl</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Vinpearl Resort & Spa Nha Trang Bay (2 Căn Villa 4 phòng ngủ)</p>
+                            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/0f766e/ffffff?text=Vinpearl+Luxury+Villa'" alt="Vinpearl Resort Villa" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            
+                            <div class="bg-amber-50 p-2.5 border-l-2 border-amber-500 rounded text-[11px] text-amber-800 mb-3">
+                                🔔 <strong>Lịch check-in:</strong> Cả đoàn nghỉ ngơi ăn trưa, di chuyển xe điện nội khu về nhận Villa trước 15:00 (tùy tình hình phòng trống).
+                            </div>
+
+                            <!-- Villa Room Assignment List -->
+                            <div class="space-y-3">
+                                <div class="bg-sky-50 p-3 rounded-lg text-xs">
+                                    <span class="font-bold text-sky-900 block mb-1">🏠 VILLA 1 (Cơ cấu 4 phòng) - Mã 79548846</span>
+                                    <ul class="space-y-1 list-disc list-inside text-slate-700">
+                                        <li>Phòng 1 & 2: Gia đình Cô 7</li>
+                                        <li>Phòng 3: Anh chị 2, Anh Bi</li>
+                                        <li>Phòng 4: Gia đình Chú 9</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-teal-50 p-3 rounded-lg text-xs">
+                                    <span class="font-bold text-teal-950 block mb-1">🏠 VILLA 2 (Cơ cấu 4 phòng) - Mã 79548845</span>
+                                    <ul class="space-y-1 list-disc list-inside text-slate-700">
+                                        <li>Phòng 1: Gia đình Anh 3</li>
+                                        <li>Phòng 2: Gia đình chú 5</li>
+                                        <li>Phòng 3: Gia đình Chú 8</li>
+                                        <li>Phòng 4: Cô 6, Anh Nhân, Chị Nhi</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 3 - Item 5 (Beach & Hygiene) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-cyan-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-cyan-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold">🏊 Tắm biển / bơi</span>
+                                <span class="text-cyan-600 font-extrabold text-xs">16:30 - 18:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Tắm Biển & Vệ Sinh Cá Nhân</h4>
+                            <p class="text-slate-600 text-sm">Cả gia đình tự do thỏa sức tắm biển riêng tư của resort hoặc vẫy vùng bơi lội tại bể bơi tràn cực rộng trước Villa. Sau đó tắm rửa, sấy tóc chuẩn bị trang phục tối lộng lẫy.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 3 - Item 6 (Tata Show) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-indigo-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-indigo-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">🌌 Tata Show</span>
+                                <span class="text-indigo-600 font-extrabold text-xs">18:30 - 22:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Mãn Nhãn Siêu Phẩm "Tata Show" Triệu Đô</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Quảng trường Thần thoại Fairy Land (Bắt đầu lúc 19:30)</p>
+                            <img src="https://images.unsplash.com/photo-1469488865564-c2de10f69f96?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/4f46e5/ffffff?text=Tata+Show+Spectacular'" alt="Tata Show Vinpearl" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            <p class="text-slate-600 text-sm mb-3">Thưởng thức show diễn thực cảnh đa phương tiện hoành tráng đầu tiên tại Việt Nam. Sau khi kết thúc show (20:10), xe điện đưa cả nhà về khách sạn dùng cơm tối ấm cúng.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= DAY 4 CONTENT ================= -->
+            <div id="day4" class="tab-content hidden space-y-8">
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-lg mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">🎡 NGÀY 22/06: Chinh Phục Trò Chơi Kỷ Lục, Công Viên Nước & Stunt Show</h3>
+                    <p class="text-blue-100 text-sm md:text-base">Một ngày ngập tràn tiếng cười và sảng khoái với loạt trò chơi từ nhẹ nhàng đến cảm giác mạnh cực đỉnh.</p>
+                </div>
+
+                <div class="relative timeline-line space-y-12">
+                    <!-- Day 4 - Item 1 (Breakfast) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-orange-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-bold">🍽️ Ăn Sáng</span>
+                                <span class="text-orange-600 font-extrabold text-xs">06:00 - 07:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Ăn Sáng Buffet Sang Chảnh Tại Resort</h4>
+                            <p class="text-slate-600 text-sm">Nạp đầy năng lượng cho ngày dài khám phá năng nổ với thực đơn phong phú tại nhà hàng sang trọng của resort.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 4 - Item 2 (Games) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-pink-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-pink-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-xs font-bold">🎢 Trò chơi</span>
+                                <span class="text-pink-600 font-extrabold text-xs">07:30 - 11:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Chinh Phục Loạt Trò Chơi Kỷ Lục VinWonders</h4>
+                            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/db2777/ffffff?text=Alpine+Coaster+VinWonders'" alt="Alpine Coaster" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            <div class="space-y-3">
+                                <div class="bg-pink-50 p-3 rounded-lg text-xs space-y-1">
+                                    <span class="font-bold text-pink-900 block">🪂 Zipline 3 Kỷ Lục Việt Nam</span>
+                                    <p class="text-slate-700">Yêu cầu chiều cao: <strong>trên 130cm</strong>. (Phân khu Fairy Land - Hoạt động từ 9h00 đến 17h00).</p>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg text-xs space-y-1">
+                                    <span class="font-bold text-purple-900 block">🎢 Đường Lượn Nhớ Đời (Alpine Coaster)</span>
+                                    <p class="text-slate-700">Yêu cầu chiều cao: <strong>trên 100cm</strong>. (Phân khu Fairy Land - Hoạt động từ 9h00 đến 18h30).</p>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1">
+                                    <span class="font-bold text-slate-900 block">🎮 Khu trò chơi trong nhà mát mẻ</span>
+                                    <p class="text-slate-700">Phù hợp cho cả các bé nhỏ, các cô chú lớn tuổi nghỉ chân tránh nắng gắt trưa.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 4 - Item 3 (Lunch & Rest) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-teal-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold">🍲 Ăn trưa</span>
+                                <span class="text-teal-600 font-extrabold text-xs">11:30 - 15:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Ăn Trưa & Nghỉ Trưa Phục Hồi Thể Lực</h4>
+                            <p class="text-slate-600 text-sm">Cả đoàn quay về resort dùng bữa trưa thịnh soạn, sau đó dành trọn thời gian nghỉ ngơi thư thái tại phòng Villa riêng trong khung giờ nắng gắt nhất.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 4 - Item 4 (Water Park) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-cyan-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-cyan-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold">💦 Công viên nước</span>
+                                <span class="text-cyan-600 font-extrabold text-xs">15:00 - 17:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">"Quẩy" Bung Nóc Tại Vịnh Phao Nổi</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Phân khu Công viên nước VinWonders</p>
+                            <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/0891b2/ffffff?text=Water+Park+VinWonders'" alt="Water Park" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            <p class="text-slate-600 text-sm">Cả gia đình mặc đồ bơi, cùng thử thách các máng trượt nước, sông lười và vui đùa sôi động tại vịnh phao nổi khổng lồ trên biển.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 4 - Item 5 (Shower & Dinner) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-indigo-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-indigo-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">🍲 Ăn tối</span>
+                                <span class="text-indigo-600 font-extrabold text-xs">17:00 - 20:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Vệ Sinh Cá Nhân & Ăn Tối Ấm Áp</h4>
+                            <p class="text-slate-600 text-sm">Cả nhà trở về Villa tắm rửa sạch sẽ, rũ bỏ nước mặn bờ biển và cùng nhau sum họp bên bàn tiệc buffet tối ngập tràn món ngon tại resort.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 4 - Item 6 (Stunt Show) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-red-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold">🎬 Stunt Show</span>
+                                <span class="text-red-600 font-extrabold text-xs">20:00 - 21:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">Màn Trình Diễn "Rise of the Sea" Kịch Tính</h4>
+                            <p class="text-xs text-slate-500 mb-3">📍 Sân khấu nước Marina - Phân khu Vinpearl Harbour</p>
+                            <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/800x450/dc2626/ffffff?text=Rise+Of+The+Sea+Stunt+Show'" alt="Stunt Show Harbor" class="w-full h-44 object-cover rounded-xl mb-3 shadow-inner">
+                            <p class="text-slate-600 text-sm">Cùng hòa mình vào những pha hành động nghẹt thở trên mặt nước, kỹ xảo âm thanh ánh sáng kết hợp với màn biểu diễn flyboard đỉnh cao tại cảng biển náo nhiệt Harbour.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= DAY 5 CONTENT ================= -->
+            <div id="day5" class="tab-content hidden space-y-8">
+                <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 shadow-lg mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">🚌 NGÀY 23/06: Thư Giãn, Check-out & Lên Đường Trở Về Bình An</h3>
+                    <p class="text-blue-100 text-sm md:text-base">Ngày nghỉ ngơi cuối cùng nhẹ nhàng, lưu giữ những tấm hình kỷ niệm quý giá cùng nhau.</p>
+                </div>
+
+                <div class="relative timeline-line space-y-12">
+                    <!-- Day 5 - Item 1 (Morning Beach) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-cyan-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-cyan-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold">🏊 Thư giãn</span>
+                                <span class="text-cyan-600 font-extrabold text-xs">06:00 - 08:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Tắm Biển Bình Minh Đón Ngày Mới</h4>
+                            <p class="text-slate-600 text-sm">Cả nhà dậy sớm dạo biển đón ánh bình minh tuyệt đẹp trên vịnh Nha Trang, tắm mát tự do tại bãi cát thoai thoải lộng gió.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 5 - Item 2 (Breakfast) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-orange-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-bold">🍽️ Ăn sáng</span>
+                                <span class="text-orange-600 font-extrabold text-xs">08:00 - 09:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Thưởng Thức Buffet Sáng Cuối</h4>
+                            <p class="text-slate-600 text-sm">Dùng bữa điểm tâm sáng thanh nhã tại resort, nạp năng lượng chuẩn bị cho hành trình di chuyển dài trở về.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 5 - Item 3 (Free Time) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-purple-500 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-purple-500">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">📸 Tự do</span>
+                                <span class="text-purple-600 font-extrabold text-xs">09:00 - 11:00</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Chụp Hình Kỷ Niệm & Thu Dọn Đồ</h4>
+                            <p class="text-slate-600 text-sm">Gia đình cùng nhau diện các trang phục đồng điệu chụp ảnh lưu niệm toàn đoàn tại khuôn viên Resort xanh mát. Sau đó, thu gom đầy đủ hành lý cá nhân và quà cáp mua sắm.</p>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Day 5 - Item 4 (Check-out) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-teal-600">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold">🏨 Trả phòng</span>
+                                <span class="text-teal-600 font-extrabold text-xs">11:00 - 11:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Check-out Villa & Lên Tàu Trở Về Đất Liền</h4>
+                            <p class="text-slate-600 text-sm">Làm thủ tục bàn giao chìa khóa phòng Villa, di chuyển xe điện ra ga cáp treo / bến tàu cao tốc để quay về bến cảng đất liền.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 5 - Item 5 (Return) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between">
+                        <div class="absolute left-5 md:left-1/2 w-6 h-6 bg-blue-900 rounded-full border-4 border-white shadow -translate-x-1/2 z-10"></div>
+                        <div class="md:w-5/12 ml-10 md:ml-0 bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-900">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-100 text-blue-900 px-3 py-1 rounded-full text-xs font-bold">🚍 Trở về</span>
+                                <span class="text-blue-900 font-extrabold text-xs">11:30 - 13:30</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">Ăn Trưa Tại Nha Trang & Chia Tay Lên Đường Về Nhà</h4>
+                            <p class="text-slate-600 text-sm mb-3">Toàn đoàn dùng bữa trưa muộn ấm cúng cùng nhau tại đất liền thành phố Nha Trang làm bữa tiệc chia tay, sau đó chia thành 2 nhóm xuất phát về quê.</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="p-3 bg-indigo-50 rounded-lg text-xs">
+                                    <span class="font-bold text-indigo-900 block mb-1">🚗 NHÓM VỀ PLEIKU</span>
+                                    <p class="font-semibold text-slate-700 mb-1">Thành viên di chuyển:</p>
+                                    <p class="text-slate-600 mb-2">• Gia đình Anh 2<br>• Gia đình Cô 7<br>• Chú 9 & Cô Hằng</p>
+                                    <p class="text-slate-600 border-t border-indigo-200/50 pt-1.5 mt-1.5"><strong>Phương tiện:</strong> Đi bằng <strong>xe thuê riêng</strong> chạy thẳng vô cùng thoải mái và chủ động.</p>
+                                </div>
+                                <div class="p-3 bg-sky-50 rounded-lg text-xs">
+                                    <span class="font-bold text-sky-900 block mb-1">🏙️ NHÓM VỀ TP. HỒ CHÍ MINH</span>
+                                    <p class="font-semibold text-slate-700 mb-1">Thành viên di chuyển:</p>
+                                    <p class="text-slate-600 mb-2">• Toàn bộ các thành viên còn lại (Gia đình A3, Chú 5, Cô 6, Chú 8, Bi, Nhi...)</p>
+                                    <p class="text-slate-600 border-t border-sky-200/50 pt-1.5 mt-1.5"><strong>Phương tiện:</strong> Di chuyển trở về bằng <strong>xe khách giường nằm</strong> chất lượng cao an toàn.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:w-5/12 hidden md:block"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-blue-900 text-white rounded-2xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h2 class="text-xl md:text-2xl font-bold mb-4">🎒 Cẩm Nang Chuẩn Bị Cho Gia Đình</h2>
+                <ul class="space-y-3 text-sm text-blue-100">
+                    <li class="flex items-center gap-3">
+                        <span class="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center text-xs font-bold">01</span>
+                        <span>Giấy tờ tùy thân (CCCD & Khai sinh bản sao cho các bé nhỏ)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center text-xs font-bold">02</span>
+                        <span>Kem chống nắng, mũ nón rộng vành, kính râm cho hoạt động ngoài trời</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="w-6 h-6 bg-blue-800 rounded-full flex items-center justify-center text-xs font-bold">03</span>
+                        <span>Trang phục nhóm "Sống ảo" & Đồ bơi gia đình sặc sỡ chụp ảnh lưu giữ</span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="text-xl md:text-2xl font-bold mb-4">📞 Danh Bạ Liên Hệ Quan Trọng</h2>
+                <div class="bg-blue-800 p-5 rounded-xl space-y-2 text-sm text-blue-100">
+                    <p class="flex justify-between border-b border-blue-700/50 pb-1.5"><span>Khách sạn Panorama:</span> <span class="font-bold">0796.779.777</span></p>
+                    <p class="flex justify-between border-b border-blue-700/50 pb-1.5"><span>Nhà hàng Nha Trang Xưa:</span> <span class="font-bold">0356.003.603</span></p>
+                    <p class="flex justify-between border-b border-blue-700/50 pb-1.5"><span>Nhà hàng Làng Tôm:</span> <span class="font-bold">0344.95.44.99</span></p>
+                    <p class="flex justify-between"><span>Tài xế đón sân bay (Nhi):</span> <span class="font-bold">0906.577.011</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 pt-6 border-t border-blue-800 text-center text-blue-300 text-xs">
+            <p>© 2024 Nha Trang Family Trip. Chúc cả đại gia đình có một kỳ nghỉ thật vui tươi, hạnh phúc và bình an!</p>
+        </div>
+    </footer>
+</div>
+
+<script>
+    function switchTab(dayId) {
+        // Hide all tab content
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => {
+            content.classList.add('hidden');
+        });
+
+        // Show selected tab content
+        const activeContent = document.getElementById(dayId);
+        if (activeContent) {
+            activeContent.classList.remove('hidden');
+        }
+
+        // Reset all button styles
+        const buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(btn => {
+            btn.className = "tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 bg-white text-slate-700 shadow border border-slate-200 hover:bg-slate-50";
+        });
+
+        // Highlight selected button
+        const activeBtn = document.getElementById('btn-' + dayId);
+        if (activeBtn) {
+            activeBtn.className = "tab-button px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 tab-active";
+        }
+    }
+
+    const wrapLabel = (label) => {
+        if (label.length > 16) {
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > 16) {
+                    lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            lines.push(currentLine.trim());
+            return lines;
+        }
+        return label;
+    };
+
+    const tooltipConfig = {
+        callbacks: {
+            title: function(tooltipItems) {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            }
+        }
+    };
+
+    // Initialize Chart
+    const ctxMember = document.getElementById('memberChart').getContext('2d');
+    new Chart(ctxMember, {
+        type: 'doughnut',
+        data: {
+            labels: [wrapLabel('Đoàn di chuyển từ TP. HCM'), wrapLabel('Đoàn di chuyển từ Pleiku'), wrapLabel('Đoàn di chuyển từ Đắk Lắk')],
+            datasets: [{
+                data: [13, 2, 2],
+                backgroundColor: ['#1e40af', '#ec4899', '#f59e0b'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: 'Inter',
+                            size: 11
+                        }
+                    }
+                },
+                tooltip: tooltipConfig
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
